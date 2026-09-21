@@ -246,6 +246,52 @@ prism {
         }
     }
 
+    version("26.3") {
+        changelogFile = "versions/26.3/CHANGELOG.md"
+
+        common {
+            compileOnly("curse.maven:irisshaders-455508:8888283")
+            compileOnly("fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:26.3.1")
+            compileOnly("curse.maven:baguettelib-1264423:8942777")
+        }
+
+        fabric {
+            loaderVersion = "0.19.5"
+            fabricApi("0.161.0+26.3")
+
+            dependencies {
+                implementation("com.electronwill.night-config:core:3.8.3")
+                implementation("com.electronwill.night-config:toml:3.8.3")
+                implementation("com.electronwill.night-config:json:3.8.3")
+                implementation("com.electronwill.night-config:hocon:3.8.3")
+                implementation("com.electronwill.night-config:yaml:3.8.3")
+                modImplementation("curse.maven:baguettelib-1264423:8942776")
+                implementation("curse.maven:forge-config-api-port-547434:8938808")
+                implementation("com.terraformersmc:modmenu:21.0.0-beta.1")
+            }
+
+            publishingDependencies {
+                requires("fabric-api")
+                requires("forge-config-api-port")
+                requires("baguettelib")
+                optional("modmenu")
+            }
+        }
+
+        neoforge {
+            loaderVersion = "26.3.0.8-beta"
+            loaderVersionRange = "[4,)"
+
+            dependencies {
+                implementation("curse.maven:baguettelib-1264423:8942777")
+            }
+
+            publishingDependencies {
+                requires("baguettelib")
+            }
+        }
+    }
+
     publishing {
         type = STABLE
         curseforge {
