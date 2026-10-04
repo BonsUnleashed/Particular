@@ -26,6 +26,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ChestBlockEntity.class)
 public abstract class InjectChestBlockEntity extends RandomizableContainerBlockEntity implements LidBlockEntity
 {
+    @Unique
+    private BlockState particular$waterloggedState;
+    @Unique
+    private boolean particular$waterlogged;
+
+    @Unique
+    private boolean particular$isWaterlogged(BlockState state) {
+        if (state == null || state != this.particular$waterloggedState) {
+            this.particular$waterlogged = state.getValue(BlockStateProperties.WATERLOGGED);
+            this.particular$waterloggedState = state;
+        }
+        return this.particular$waterlogged;
+    }
+
 	@Unique
 	private int ticksUntilNextSwitch = 20;
 	@Unique
@@ -68,7 +82,7 @@ public abstract class InjectChestBlockEntity extends RandomizableContainerBlockE
 	private static void randomlyOpen(Level world, BlockPos pos, BlockState state, ChestBlockEntity blockEntity, CallbackInfo ci) {
 		if (!ParticularConfig.soulSandBubbles()) { return; }
 
-		if (!state.getValue(BlockStateProperties.WATERLOGGED) ||
+		if (!((InjectChestBlockEntity)(Object)blockEntity).particular$isWaterlogged(state) ||
 				state.getValue(BlockStateProperties.CHEST_TYPE) == ChestType.LEFT ||
 				!getSoulSand(world, pos, state))
 		{

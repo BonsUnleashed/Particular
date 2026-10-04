@@ -24,6 +24,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(EnderChestBlockEntity.class)
 public abstract class InjectEnderChestBlockEntity extends BlockEntity implements LidBlockEntity
 {
+    @Unique
+    private BlockState particular$waterloggedState;
+    @Unique
+    private boolean particular$waterlogged;
+
+    @Unique
+    private boolean particular$isWaterlogged(BlockState state) {
+        if (state == null || state != this.particular$waterloggedState) {
+            this.particular$waterlogged = state.getValue(BlockStateProperties.WATERLOGGED);
+            this.particular$waterloggedState = state;
+        }
+        return this.particular$waterlogged;
+    }
+
 	@Unique
 	private int ticksUntilNextSwitch = 20;
 	@Unique
@@ -50,7 +64,7 @@ public abstract class InjectEnderChestBlockEntity extends BlockEntity implements
 	{
 		if (!ParticularConfig.soulSandBubbles()) { return; }
 
-		if (!state.getValue(BlockStateProperties.WATERLOGGED) ||
+		if (!((InjectEnderChestBlockEntity)(Object)blockEntity).particular$isWaterlogged(state) ||
 			world.getBlockState(pos.below()).getBlock() != Blocks.SOUL_SAND ||
 			world.getBlockState(pos.above()).isRedstoneConductor(world, pos.above()))
 		{
